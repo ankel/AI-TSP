@@ -47,7 +47,7 @@ namespace TravelingSaleman
         };
         public const int total = 29;
         static int[,] mileage = new int[total, total];
-        public const int RUNTIME_MAX = 60;
+        public const int RUNTIME_MAX = 20;
 
         static int ReadFileFillMileage()
         {
@@ -202,25 +202,59 @@ namespace TravelingSaleman
 
         static void Main(string[] args)
         {
-            //GetNames();
-            //Console.WriteLine(ReadFileFillMileage());
+
             FillMileage();
-            TourData tourInfo = new TourData(ReadTour(args[0]).ToArray(), mileage);
-            Task<TourResult>[] searchers = new Task<TourResult>[Environment.ProcessorCount / 2];
-            TaskFactory tf = new TaskFactory();
-            for (int i = 0; i < searchers.Length; ++i)
+            int[] cityList = ReadTour(args[0]).ToArray();
+            if (cityList.Length != total)
             {
-                searchers[i] = Task.Factory.StartNew<TourResult>(Search, ((ICloneable)tourInfo).Clone());
+                TourData tourInfo = new TourData(ReadTour(args[0]).ToArray(), mileage);
+                Task<TourResult>[] searchers = new Task<TourResult>[Environment.ProcessorCount / 2];
+                TaskFactory tf = new TaskFactory();
+                for (int i = 0; i < searchers.Length; ++i)
+                {
+                    searchers[i] = Task.Factory.StartNew<TourResult>(Search, ((ICloneable)tourInfo).Clone());
+                }
+                Task.WaitAll(searchers);
+                TourResult[] results = new TourResult[searchers.Length];
+                for (int i = 0; i < searchers.Length; ++i)
+                {
+                    results[i] = searchers[i].Result;
+                }
+                Array.Sort(results);
+                Console.WriteLine(results[0].toString(cities));
             }
-            Task.WaitAll(searchers);
-            TourResult[] results = new TourResult[searchers.Length];
-            for (int i = 0; i < searchers.Length; ++i)
+            else
             {
-                results[i] = searchers[i].Result;
+
+                AntColony ac = new AntColony(total, mileage);
+
+                for (int currIteration = 0; currIteration < 10000; ++currIteration)
+                {
+                    if (ac.simulateAnts() == 0)
+                    {
+                        ac.updateTrail();
+                        if (currIteration != 10000)
+                        {
+                            ac.Restart();
+                        }
+                    }
+                }
+
+                Console.WriteLine(ac.best);
+
+                foreach (var result in ac.ResultTour())
+                {
+                    foreach (var city in cities)
+                    {
+                        if (result == city.Value)
+                        {
+                            Console.WriteLine(city.Key);
+                        }
+                    }
+                }
             }
-            Array.Sort(results);
-            Console.WriteLine(results[0].toString(cities));
             Console.ReadLine();
+
         }
 
         private static List<int> ReadTour(string p)
