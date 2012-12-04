@@ -36,15 +36,14 @@ namespace TravelingSaleman
 
         static Dictionary<string, int> cities = new Dictionary<string, int>()
         {
-            {"Albany", 0}, {"Ashland", 1}, {"Astoria", 2}, {"Baker.City", 3}, {"Bend", 4},
-            {"Burns", 5}, {"Coos.Bay", 6}, {"Corvallis", 7}, {"Eugene", 8}, {"Florence", 9},
-            {"Forest.Grove", 10}, {"Grants.Pass", 11}, {"Gresham", 12}, {"Klamath.Falls", 13},
-            {"La.Grande", 14}, {"McMinnville", 15}, {"Medford", 16}, {"Milton-Freewater", 17},
-            {"Newberg", 18}, {"Newport", 19}, {"Ontario", 20}, {"Pendleton", 21}, {"Portland", 22},
-            {"Redmond", 23}, {"Roseburg", 24}, {"Salem", 25}, {"Springfield", 26},  {"The.Dalles", 27},
-            {"Tillamook", 28}, {"Woodburn", 29},
+            {"Albany", 0}, {"Ashland", 1}, {"Astoria", 2}, {"Baker.City", 3}, {"Bend", 4}, {"Burns", 5},
+            {"Coos.Bay", 6}, {"Corvallis", 7}, {"Eugene", 8}, {"Florence", 9}, {"Forest.Grove", 10},
+            {"Grants.Pass", 11}, {"Gresham", 12}, {"Klamath.Falls", 13}, {"La.Grande", 14}, 
+            {"McMinnville", 15}, {"Medford", 16}, {"Newberg", 17}, {"Newport", 18}, {"Ontario", 19}, 
+            {"Pendleton", 20}, {"Portland", 21}, {"Redmond", 22}, {"Roseburg", 23}, {"Salem", 24}, 
+            {"Springfield", 25}, {"The.Dalles", 26}, {"Tillamook", 27}, {"Woodburn", 28},
         };
-        static int total = 30;
+        static int total = 29;
         static int[,] mileage = new int[total, total];
         
         static int ReadFileFillMileage()
@@ -67,7 +66,7 @@ namespace TravelingSaleman
             {
                 for (int j = 0; j < total; ++j)
                 {
-                    Debug.Assert(mileage[i, j] != 0 || mileage[j, i] != 0 || i==j, i.ToString() + " " + j.ToString());
+                    Debug.Assert( mileage[i,j] != 0 || mileage[j,i] != 0 || i == j, i.ToString() + " " + j.ToString());
                     if (mileage[i, j] == 0)
                     {
                         mileage[i, j] = mileage[j, i];
@@ -102,6 +101,7 @@ namespace TravelingSaleman
 
         static void Main(string[] args)
         {
+            //GetNames();
             Console.WriteLine(ReadFileFillMileage());
             Console.ReadLine();
         }
